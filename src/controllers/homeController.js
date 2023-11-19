@@ -1,5 +1,7 @@
+const connection = require('../config/database')
+
 const getHomepage = (req, res) => {
-  res.send("Hello World vs Hoi Dan IT & Eric! & nodemon");
+  return res.render('home.ejs');
 }
 
 const getABC = (req, res) => {
@@ -10,8 +12,27 @@ const getHoiDanIT = (req, res) => {
   res.render('sample.ejs');
 }
 
+const postCreateUser = async (req, res) => {
+  let email = req.body.email;
+  let name = req.body.name;
+  let city = req.body.city;
+  console.log(">>> req.body: ", email, name, city);
+
+  let [results, field] = await connection.query(
+    `INSERT INTO Users (email, name, city) VALUES (?, ?, ?);`, [email, name, city]);
+
+  console.log(">>> check results: ", results);
+  res.send('Created Successfully')
+}
+
+const getCreatePage = (req, res) => {
+  res.render('create.ejs');
+}
+
 module.exports = {
   getHomepage,
   getABC,
-  getHoiDanIT
+  getHoiDanIT,
+  postCreateUser,
+  getCreatePage
 }
