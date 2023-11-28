@@ -31,10 +31,18 @@ const getCreatePage = (req, res) => {
   res.render('create.ejs');
 }
 
+const getUpdatePage = async (req, res) => {
+  const userID = req.params.userID
+  let [results, field] = await connection.query('select * from Users where id = ?', [userID])
+  let user = results && results.length > 0 ? results[0] : {}
+  res.render('edit.ejs', { userEdit: user })
+}
+
 module.exports = {
   getHomepage,
   getABC,
   getHoiDanIT,
   postCreateUser,
-  getCreatePage
+  getCreatePage,
+  getUpdatePage
 }
