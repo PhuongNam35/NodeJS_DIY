@@ -1,5 +1,5 @@
 const connection = require('../config/database')
-const { getAllUsers } = require('../services/CRUDService')
+const { getAllUsers, getUserById } = require('../services/CRUDService')
 
 const getHomepage = async (req, res) => {
   let results = await getAllUsers()
@@ -33,8 +33,7 @@ const getCreatePage = (req, res) => {
 
 const getUpdatePage = async (req, res) => {
   const userID = req.params.userID
-  let [results, field] = await connection.query('select * from Users where id = ?', [userID])
-  let user = results && results.length > 0 ? results[0] : {}
+  let user = await getUserById(userID)
   res.render('edit.ejs', { userEdit: user })
 }
 
