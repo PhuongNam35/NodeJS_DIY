@@ -1,5 +1,5 @@
 const connection = require('../config/database')
-const { getAllUsers, getUserById } = require('../services/CRUDService')
+const { getAllUsers, getUserById, updateUserById, deleteUserById } = require('../services/CRUDService')
 
 const getHomepage = async (req, res) => {
   let results = await getAllUsers()
@@ -24,7 +24,31 @@ const postCreateUser = async (req, res) => {
     `INSERT INTO Users (email, name, city) VALUES (?, ?, ?);`, [email, name, city]);
 
   console.log(">>> check results: ", results);
-  res.send('Created Successfully')
+  res.redirect('/')
+}
+
+const postUpdateUser = async (req, res) => {
+  let email = req.body.email;
+  let name = req.body.name;
+  let city = req.body.city;
+  let userID = req.body.userID;
+
+  await updateUserById(email, name, city, userID)
+
+  res.redirect('/')
+}
+
+const postDeleteUser = async (req, res) => {
+  const userID = req.params.id
+  let user = await getUserById(userID)
+
+  res.render('delete.ejs', { userEdit: user })
+}
+
+const postHandleRemoveUser = async (req, res) => {
+  const id = req.body.userID
+  await deleteUserById(id)
+  res.redirect('/')
 }
 
 const getCreatePage = (req, res) => {
@@ -42,6 +66,9 @@ module.exports = {
   getABC,
   getHoiDanIT,
   postCreateUser,
+  postUpdateUser,
+  postDeleteUser,
   getCreatePage,
-  getUpdatePage
+  getUpdatePage,
+  postHandleRemoveUser
 }
